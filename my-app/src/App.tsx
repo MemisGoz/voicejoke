@@ -69,7 +69,7 @@ function App() {
       </header>
     <div className="container">
       <button className="button" onClick={isListening ? handleStopListening : handleStartListening}>
-      <svg xmlns="http://www.w3.org/2000/svg" width={24} viewBox="0 0 24 24" height={24} fill="none" className="svg-icon"><g strokeWidth={2} strokeLinecap="round" stroke="#ff342b"><rect y={3} x={9} width={6} rx={3} height={11} /><path d="m12 18v3" /><path d="m8 21h8" /><path d="m19 11c0 3.866-3.134 7-7 7-3.86599 0-7-3.134-7-7" /></g></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width={24} viewBox="0 0 24 24" height={24} fill="none" className="svg-icon"><g strokeWidth={2} strokeLinecap="round" stroke="#5bf38b"><rect y={3} x={9} width={6} rx={3} height={11} /><path d="m12 18v3" /><path d="m8 21h8" /><path d="m19 11c0 3.866-3.134 7-7 7-3.86599 0-7-3.134-7-7" /></g></svg>
       {isListening ? "Listening..." : "Press to Talk"}
     </button>
       <div>

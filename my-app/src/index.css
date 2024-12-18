@@ -30,7 +30,15 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 3%;
+  margin-top: 2%;
+}
+@media screen and (max-width: 768px) {
+  .container {
+    margin-top: 20%;
+  }
+  h1{
+    font-size: 1.0em;
+  }
 }
 
 .button {
@@ -51,13 +59,6 @@ h1 {
   font-size: 15px;
 }
 
-.lable {
-  line-height: 20px;
-  font-size: 17px;
-  color: #FF342B;
-  font-family: sans-serif;
-  letter-spacing: 1px;
-}
 
 .button:hover {
   opacity: 85%;

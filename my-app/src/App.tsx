@@ -17,7 +17,7 @@ function App() {
   const { startListening, stopListening, transcript, reset } = useVoiceToText();
 
   // Moods
-  const moods = ['happy', 'sad', 'sleepy', 'angry'];
+  const moods = ['happy', 'sad', 'scared', 'angry', 'calm', 'surprised', 'confident', 'nervous'];
 
   // Fetch Jokes based on the mood word
   const fetchJokes = async (mood: string) => {
@@ -61,17 +61,25 @@ function App() {
 
   return (
     <div>
-      <button onClick={isListening ? handleStopListening : handleStartListening}>
-        {isListening ? "Listening..." : "Press to Talk"}
-      </button>
+      <header className="fancy">
+      <h1 className="sweet-title">
+      <span data-text="Voice">Voice</span>
+      <span data-text="Jokes">Jokes</span>
+    </h1>
+      </header>
+    <div className="container">
+      <button className="button" onClick={isListening ? handleStopListening : handleStartListening}>
+      <svg xmlns="http://www.w3.org/2000/svg" width={24} viewBox="0 0 24 24" height={24} fill="none" className="svg-icon"><g strokeWidth={2} strokeLinecap="round" stroke="#ff342b"><rect y={3} x={9} width={6} rx={3} height={11} /><path d="m12 18v3" /><path d="m8 21h8" /><path d="m19 11c0 3.866-3.134 7-7 7-3.86599 0-7-3.134-7-7" /></g></svg>
+      {isListening ? "Listening..." : "Press to Talk"}
+    </button>
       <div>
-       <p>{transcript ? `did not recognize ${transcript}` : `Speak a mood word (e.g., "happy", "sad", "sleepy", "angry")`}</p> 
+       <p>{transcript ? `did not recognize ${transcript}` : `Speak a mood word (e.g., "happy", "surprised", "scared", "angry")`}</p> 
         </div>
       <div>
         {jokes.length > 0 ? (
           jokes.map((dadJoke: ApiConfig) => (
-            <div className="" key={dadJoke.id}>
-              <h1>{dadJoke.joke}</h1>
+            <div className="jokes" key={dadJoke.id}>
+              <h1>- {dadJoke.joke}</h1>
                {/* Render the recognized word */}
             </div>
           ))
@@ -79,6 +87,7 @@ function App() {
           <p></p>
         )}
       </div>
+    </div>
     </div>
   );
 }

@@ -12,14 +12,16 @@ function App() {
   const jokeApi = "https://icanhazdadjoke.com/search";
   const [jokes, setJokes] = useState<ApiConfig[]>([]);
   const [isListening, setIsListening] = useState(false);
+  const [isMicrophoneDenied, setIsMicrophoneDenied] = useState(false); 
+  const [isInactive, setIsInactive] = useState(false); 
 
-  // Import functions from `react-speakup`
+  // Import functions from react-speakup
   const { startListening, stopListening, transcript, reset } = useVoiceToText();
 
-  // Moods
+  // Moods to activate dad joke fetch
   const moods = ['happy', 'sad', 'scared', 'angry', 'calm', 'surprised', 'confident', 'nervous'];
 
-  // Fetch Jokes based on the mood word
+  // Fetch Jokes based on the mood words
   const fetchJokes = async (mood: string) => {
     try {
       const { data } = await axios.get(`${jokeApi}?term=${mood}`, {
@@ -32,6 +34,33 @@ function App() {
     }
   };
 
+  // Stop listening after 10 seconds of inactivity
+  useEffect(() => {
+    const inactivityTimeout = setTimeout(() => {
+      if (isListening) {
+        console.log("No speech detected for 10 seconds, stopping...");
+        setIsInactive(true); // No voice activity, set to true
+        stopListening(); // Stop listening after 10 seconds of inactivity
+        setIsListening(false); // Update listening state
+      }
+    }, 10000); // 10 seconds timeout
+
+    return () => clearTimeout(inactivityTimeout); // Clean up timeout on effect cleanup
+  }, [transcript, isListening, stopListening]); // Trigger effect whenever `transcript` or `isListening` changes
+
+
+  // Check for microphone access permissions
+  const checkMicrophonePermission = async () => {
+    try {
+      // Check if the microphone is accessible by trying to get user media
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setIsMicrophoneDenied(false); // Microphone access granted
+    } catch (error) {
+      setIsMicrophoneDenied(true); // Microphone access denied
+      console.error("Microphone access denied:", error);
+    }
+  };
+
   // React to changes in `transcript`
   useEffect(() => {
     const moodWord = transcript.trim().toLowerCase();
@@ -39,16 +68,22 @@ function App() {
       console.log(`Fetching jokes for mood: ${moodWord}`);
       fetchJokes(moodWord); // Fetch jokes when a valid mood word is recognized
       reset(); // Reset the transcript after processing
+      handleStopListening(); // stop listening
     } else if (transcript && !moods.includes(moodWord)) {
       console.log("Unrecognized mood word:", moodWord);
-    
     }
+
     setTimeout(() => {
-      reset();
+      reset(); // Reset the transcript after a short delay to prevent repeated calls
     }, 1800);
   }, [transcript, reset]); // Trigger effect whenever `transcript` changes
 
+  // Start Listening for Speech
   const handleStartListening = () => {
+    if (isMicrophoneDenied) {
+      console.error("Cannot start listening, microphone access is denied.");
+      return; // Don't start listening if the microphone is denied
+    }
     setIsListening(true);
     startListening(); // Start listening
   };
@@ -56,38 +91,61 @@ function App() {
   const handleStopListening = () => {
     setIsListening(false);
     stopListening(); // Stop listening
-    
+    setIsInactive(false);
   };
+
+  // Check for microphone permission when the component is mounted
+  useEffect(() => {
+    checkMicrophonePermission();
+  }, []); // Only run once when the component is mounted
 
   return (
     <div>
       <header className="fancy">
-      <h1 className="sweet-title">
-      <span data-text="Voice">Voice</span>
-      <span data-text="Jokes">Jokes</span>
-    </h1>
+        <h1 className="sweet-title">
+          <span data-text="Voice">Voice</span>
+          <span data-text="Jokes">Jokes</span>
+        </h1>
       </header>
-    <div className="container">
-      <button className="button" onClick={isListening ? handleStopListening : handleStartListening}>
-      <svg xmlns="http://www.w3.org/2000/svg" width={24} viewBox="0 0 24 24" height={24} fill="none" className="svg-icon"><g strokeWidth={2} strokeLinecap="round" stroke="#5bf38b"><rect y={3} x={9} width={6} rx={3} height={11} /><path d="m12 18v3" /><path d="m8 21h8" /><path d="m19 11c0 3.866-3.134 7-7 7-3.86599 0-7-3.134-7-7" /></g></svg>
-      {isListening ? "Listening..." : "Press to Talk"}
-    </button>
-      <div>
-       <p>{transcript ? `did not recognize ${transcript}` : `Speak a mood word (e.g., "happy", "surprised", "scared", "angry")`}</p> 
+      <div className="container">
+        <button
+          className="button"
+          onClick={isListening ? handleStopListening : handleStartListening}
+          disabled={isMicrophoneDenied} // Disable the button if microphone access is denied
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width={24} viewBox="0 0 24 24" height={24} fill="none" className="svg-icon">
+            <g strokeWidth={2} strokeLinecap="round" stroke="#5bf38b">
+              <rect y={3} x={9} width={6} rx={3} height={11} />
+              <path d="m12 18v3" />
+              <path d="m8 21h8" />
+              <path d="m19 11c0 3.866-3.134 7-7 7-3.86599 0-7-3.134-7-7" />
+            </g>
+          </svg>
+          {isListening ? "Listening..." : "Press to Talk"}
+        </button>
+        <div>
+        { isInactive && <p>No voice activity detected. Please speak to continue.</p>}
+
+          <p>
+            {isMicrophoneDenied
+              ? "Microphone access denied. Please enable microphone."
+              : transcript
+              ? `Did not recognize "${transcript}"`
+              : `Speak a mood word (e.g., "happy", "surprised", "scared", "angry")`}
+          </p>
         </div>
-      <div>
-        {jokes.length > 0 ? (
-          jokes.map((dadJoke: ApiConfig) => (
-            <div className="jokes" key={dadJoke.id}>
-              <h1>- {dadJoke.joke}</h1>
-               {/* Render the recognized word */}
-            </div>
-          ))
-        ) : (
-          <p></p>
-        )}
+        <div>
+          {jokes.length > 0 ? (
+            jokes.map((dadJoke: ApiConfig) => (
+              <div className="jokes" key={dadJoke.id}>
+                <h1>- {dadJoke.joke}</h1>
+              </div>
+            ))
+          ) : (
+            <p className="emojidad">👨🏼‍🦳</p>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 }

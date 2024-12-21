@@ -44,3 +44,17 @@
 .emojidad{
   font-size: 50px;
 }
+.jokeflex{
+  display: flex;
+  flex-direction: column;
+}
+.main{
+  display: flex;
+  height: 100vh;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.jokes{
+  width: 670px;
+}

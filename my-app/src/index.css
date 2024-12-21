@@ -19,7 +19,7 @@ body {
 }
 
 h1 {
-  font-size: 1.7em;
+  font-size: 1.0em;
   line-height: 1.5;
   text-align: start;
 }
@@ -124,9 +124,4 @@ h1 {
       padding-left: 2.25rem;
     }
   }
-}
-.jokes{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }

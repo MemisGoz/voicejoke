@@ -1,0 +1,5 @@
+{
+    "tasks": {
+      "dev": "deno run -ERNS --watch --env server.ts"
+    }
+  }

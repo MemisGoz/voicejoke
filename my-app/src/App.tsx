@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import './App.css';
 import { useVoiceToText } from "react-speakup";
+import MoodList from "./MoodList";
 
 interface ApiConfig {
   id: string;
@@ -67,6 +68,14 @@ function App() {
     if (moods.includes(moodWord)) {
       console.log(`Fetching jokes for mood: ${moodWord}`);
       fetchJokes(moodWord); // Fetch jokes when a valid mood word is recognized
+      try {
+        const response = axios.post("http://localhost:3000/api/mood", {
+          input: moodWord
+        });
+        console.log(response);
+      } catch (error) {
+        console.log("api post error", error)
+      }
       reset(); // Reset the transcript after processing
       handleStopListening(); // stop listening
     } else if (transcript && !moods.includes(moodWord)) {
@@ -100,7 +109,8 @@ function App() {
   }, []); // Only run once when the component is mounted
 
   return (
-    <div>
+    <div className="main">
+      <div>
       <header className="fancy">
         <h1 className="sweet-title">
           <span data-text="Voice">Voice</span>
@@ -134,7 +144,8 @@ function App() {
               : `Speak a mood word (e.g., "happy", "surprised", "scared", "angry")`}
           </p>
         </div>
-        <div>
+        <div className="secondcontainer">
+        <div className="jokeflex">
           {jokes.length > 0 ? (
             jokes.map((dadJoke: ApiConfig) => (
               <div className="jokes" key={dadJoke.id}>
@@ -144,8 +155,12 @@ function App() {
           ) : (
             <p className="emojidad">👨🏼‍🦳</p>
           )}
+         
+        </div>
         </div>
       </div>
+      </div>
+      <MoodList />
     </div>
   );
 }

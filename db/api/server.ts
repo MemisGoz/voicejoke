@@ -1,4 +1,4 @@
-import { addMood, getMoods } from "./controllers/jokesController.ts";
+import { addMood, getMoods } from "../controllers/jokesController.ts";
 
 
 // CORS Headers

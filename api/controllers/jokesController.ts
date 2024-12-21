@@ -1,5 +1,5 @@
 import { jokes } from "../db.ts";
-import { ObjectId } from "npm:mongodb@6.12.0";
+import { ObjectId } from "mongodb";
 
 
 

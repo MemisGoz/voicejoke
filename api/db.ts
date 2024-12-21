@@ -1,4 +1,4 @@
-import { MongoClient } from "npm:mongodb@6.12.0";
+import { MongoClient } from "mongodb";
 
 const MONGODB_URI = Deno.env.get("MONGODB_URI");
 const DB_NAME = Deno.env.get("DB_NAME");

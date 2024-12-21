@@ -2,6 +2,7 @@ import { jokes } from "../db.ts";
 import { ObjectId } from "npm:mongodb@6.12.0";
 
 
+
 async function addMood(req: Request): Promise<Response> {
     try {
         const body = await req.json();

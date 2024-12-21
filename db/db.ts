@@ -8,6 +8,7 @@ if (!MONGODB_URI) {
     Deno.exit(1);
 }
 
+
 const client = new MongoClient(MONGODB_URI);
 
 try {

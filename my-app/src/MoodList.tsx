@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 interface MoodConfig {
@@ -7,7 +7,7 @@ interface MoodConfig {
 }
 
 export default function MoodList() {
-    const moodApi = "http://localhost:3000/api/mood";
+    const moodApi = "https://gojokeapi.vercel.app/api/moods";
     const [mood, setMood] = useState<MoodConfig[]>([]);
     const [lastFetched, setLastFetched] = useState<Date | null>(null);
 
@@ -22,6 +22,7 @@ export default function MoodList() {
                 console.log(response.data);
             }
             setLastFetched(new Date()); // Update the last fetched time
+            console.log(lastFetched)
         } catch (error) {
             console.error("Error fetching mood:", error);
         }

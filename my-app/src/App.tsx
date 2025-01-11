@@ -69,8 +69,8 @@ function App() {
       console.log(`Fetching jokes for mood: ${moodWord}`);
       fetchJokes(moodWord); // Fetch jokes when a valid mood word is recognized
       try {
-        const response = axios.post("http://localhost:3000/api/mood", {
-          input: moodWord
+        const response = axios.post("https://gojokeapi.vercel.app/api/moods", {
+          mood: moodWord
         });
         console.log(response);
       } catch (error) {
